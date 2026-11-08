@@ -1,0 +1,378 @@
+// ISPM - Index HTML (PRESS SIGN IT TO CONTINUE)
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentSync</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="login">
+        <div class="login-card">
+            <div class="logo">
+                <img src="logo.svg" alt="DentSync logo">
+                <span class="dent">Dent</span><span class="sync">Sync</span>
+            </div>
+            <h1>Login</h1>
+            <hr>
+            <label>Email:</label>
+            <div class="login-field"></div>
+            <label>Password:</label>
+            <div class="login-field"></div>
+            <a href="#" class="signin-btn" data-page="calendar">Sign In</a>
+            <a href="#" class="forgot-link">Forgot Password?</a>
+        </div>
+    </div>
+
+    <div id="app">
+
+        <div class="sidebar">
+            <div class="logo">
+                <img src="logo.svg" alt="DentSync logo">
+                <span class="dent">Dent</span><span class="sync">Sync</span>
+            </div>
+            <div class="nav">
+                <a href="#" data-page="calendar"><span class="icon"></span>Calendar</a>
+                <a href="#" data-page="patients"><span class="icon"></span>Patients</a>
+                <a href="#" data-page="billing"><span class="icon"></span>Billing</a>
+                <a href="#" data-page="settings"><span class="icon"></span>Settings</a>
+            </div>
+        </div>
+
+        <div class="main">
+
+            <div class="topbar">
+                <div class="search-box">
+                    <span>Search patient name, ID, or phone....</span>
+                    <svg width="30" height="30" viewBox="0 0 30 30">
+                        <circle cx="12" cy="12" r="8" fill="none" stroke="#444" stroke-width="2"/>
+                        <path d="M18 18l9 9" stroke="#444" stroke-width="2"/>
+                    </svg>
+                </div>
+                <span class="icon bell"></span>
+                <div class="user-box">
+                    <span class="icon small"></span>
+                    <span class="user-name">Name (Role)</span>
+                    <span class="arrow"></span>
+                </div>
+            </div>
+
+            <div class="page" id="shell">
+                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <line x1="0" y1="0" x2="100" y2="100" stroke="#000" stroke-width="3" vector-effect="non-scaling-stroke"/>
+                    <line x1="100" y1="0" x2="0" y2="100" stroke="#000" stroke-width="3" vector-effect="non-scaling-stroke"/>
+                </svg>
+            </div>
+
+            <div class="page" id="calendar">
+                <div class="calendar-bar">
+                    <a href="#" class="btn">Today</a>
+                    <div class="month">&lt; Month 20XX &gt;</div>
+                    <a href="#" class="btn gray">Week</a>
+                    <a href="#" class="btn">Day</a>
+                    <a href="#" class="btn gray small-text">New Booking +</a>
+                </div>
+                <div class="calendar-scroll">
+                    <table class="calendar">
+                        <tr>
+                            <th></th>
+                            <th>Mon 9</th>
+                            <th>Tue 10</th>
+                            <th>Wed 11</th>
+                            <th>Thu 12</th>
+                            <th>Fri 13</th>
+                            <th>Sat 14</th>
+                        </tr>
+                        <tr>
+                            <td class="time">9:00</td>
+                            <td><div class="event"><b>Patient Name</b>Procedure</div></td>
+                            <td></td>
+                            <td><div class="event"><b>Patient Name</b>Procedure</div></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="time">10:00</td>
+                            <td></td>
+                            <td><div class="event"><b>Patient Name</b>Procedure</div></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><div class="event"><b>Patient Name</b>Procedure</div></td>
+                        </tr>
+                        <tr>
+                            <td class="time">11:00</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><div class="event"><b>Patient Name</b>Procedure</div></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="time">12:00</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><div class="event"><b>Patient Name</b>Procedure</div></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="time">1:00</td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td>
+                        </tr>
+                        <tr>
+                            <td class="time">2:00</td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td>
+                        </tr>
+                        <tr>
+                            <td class="time">3:00</td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="page" id="patients">
+                <div class="patients-layout">
+
+                    <div class="patients-list">
+                        <div class="list-head">
+                            <h2>Patients</h2>
+                            <a href="#" class="btn gray">+ New Patient</a>
+                        </div>
+                        <table class="data patients-table">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Last Visit</th>
+                                <th>Balance</th>
+                            </tr>
+                            <tr>
+                                <td>P-002</td>
+                                <td><a href="#" data-page="patient">Trishia Maralit</a></td>
+                                <td>09xx xxx xxxx</td>
+                                <td>Nov 02</td>
+                                <td>₱ 0</td>
+                            </tr>
+                            <tr>
+                                <td>P-003</td>
+                                <td>Lysa Joy</td>
+                                <td>09xx xxx xxxx</td>
+                                <td>May 05</td>
+                                <td>₱ 1,200</td>
+                            </tr>
+                            <tr>
+                                <td>P-004</td>
+                                <td>Lanz Amwel</td>
+                                <td>09xx xxx xxxx</td>
+                                <td>Dec 21</td>
+                                <td>₱ 500</td>
+                            </tr>
+                            <tr>
+                                <td>P-005</td>
+                                <td>Grace Dela Cruz</td>
+                                <td>09xx xxx xxxx</td>
+                                <td>June 13</td>
+                                <td>₱ 200</td>
+                            </tr>
+                            <tr>
+                                <td>P-006</td>
+                                <td>Andrea Kaye</td>
+                                <td>09xx xxx xxxx</td>
+                                <td>Aug 19</td>
+                                <td>₱ 1,000</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="new-patient">
+                        <h3>New Patient</h3>
+                        <small>Step 1: Check for an existing record</small>
+                        <label>Full Name</label>
+                        <div class="input-box">Trishia Maralit</div>
+                        <label>Birthdate</label>
+                        <div class="input-box">MM / DD / YYYY</div>
+                        <a href="#" class="action-btn check-btn">Check records</a>
+                        <div class="found-box">
+                            <b>Possible existing record</b>
+                            <p>P-002 Trishia Maralit<br>Born 11/02/2006</p>
+                            <a href="#" class="action-btn open-btn" data-page="patient">Open record</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="page" id="patient">
+                <div class="patient-head">
+                    <a href="#" class="back" data-page="patients">&lt; Patients</a>
+                    <div class="patient-name">Trishia Maralit <span>P-002</span></div>
+                    <a href="#" class="btn gray">Book</a>
+                    <a href="#" class="btn plain">Edit</a>
+                </div>
+                <div class="tabs">
+                    <a href="#" class="tab current">Overview</a>
+                    <a href="#" class="tab">Medical</a>
+                    <a href="#" class="tab">Treatments</a>
+                    <a href="#" class="tab" data-page="billing">Billing</a>
+                    <a href="#" class="tab">Notes</a>
+                </div>
+                <div class="boxes">
+                    <div class="box">
+                        <h3>Possible existing record</h3>
+                        <p>Age / birthdate</p>
+                        <p>Phone</p>
+                        <p>Address</p>
+                        <p>Emergency contact</p>
+                    </div>
+                    <div class="box">
+                        <h3>Medical Condition</h3>
+                        <p>Conditions</p>
+                        <p>Allergies</p>
+                        <p>Medications</p>
+                        <p>Notes for dentist</p>
+                    </div>
+                </div>
+                <div class="box visits">
+                    <h3>Recent visits and post-op notes</h3>
+                    <div class="visit"><span>Oct 28</span><span>#14 Filling</span><span>Dr. [Name]</span><small>Post-op note preview...</small></div>
+                    <div class="visit"><span>Oct 28</span><span>#14 Filling</span><span>Dr. [Name]</span><small>Post-op note preview...</small></div>
+                    <div class="visit"><span>Oct 28</span><span>#14 Filling</span><span>Dr. [Name]</span><small>Post-op note preview...</small></div>
+                    <div class="visit"><span>Oct 28</span><span>#14 Filling</span><span>Dr. [Name]</span><small>Post-op note preview...</small></div>
+                </div>
+            </div>
+
+            <div class="page" id="billing">
+                <div class="title-row">
+                    <h2>Trishia Maralit <span>Ledger</span></h2>
+                    <a href="#" class="btn gray">Add treatment</a>
+                </div>
+                <table class="data ledger-table">
+                    <tr>
+                        <th>Date</th>
+                        <th>Tooth</th>
+                        <th>Procedure</th>
+                        <th>Dentist</th>
+                        <th>Cost</th>
+                        <th>Paid</th>
+                        <th>Balance</th>
+                    </tr>
+                    <tr>
+                        <td>10/28</td>
+                        <td>#14</td>
+                        <td>Filling</td>
+                        <td>Dr. [Name]</td>
+                        <td>₱ 1,500</td>
+                        <td>₱ 1,500</td>
+                        <td>₱ 0</td>
+                    </tr>
+                    <tr>
+                        <td>11/02</td>
+                        <td>#26</td>
+                        <td>Extraction</td>
+                        <td>Dr. [Name]</td>
+                        <td>₱ 2,000</td>
+                        <td>₱ 800</td>
+                        <td>₱ 1,200</td>
+                    </tr>
+                    <tr>
+                        <td>11/28</td>
+                        <td>#11</td>
+                        <td>Cleaning</td>
+                        <td>Dr. [Name]</td>
+                        <td>₱ 800</td>
+                        <td>₱ 800</td>
+                        <td>₱ 0</td>
+                    </tr>
+                    <tr>
+                        <td>12/15</td>
+                        <td>#12</td>
+                        <td>Cleaning</td>
+                        <td>Dr. [Name]</td>
+                        <td>₱ 800</td>
+                        <td>₱ 0</td>
+                        <td>₱ 800</td>
+                    </tr>
+                </table>
+                <div class="balance-box">
+                    <p>Outstanding balance</p>
+                    <strong>₱ 2,000</strong>
+                    <a href="#" class="btn gray">Record Payment</a>
+                    <a href="#" class="btn plain">Print receipt</a>
+                </div>
+            </div>
+
+            <div class="page" id="settings">
+                <div class="title-row">
+                    <h2>User and Roles</h2>
+                    <a href="#" class="btn gray">+ Add user</a>
+                </div>
+                <table class="data users-table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                    </tr>
+                    <tr>
+                        <td>Dr. [Name]</td>
+                        <td>Dentist / Owner</td>
+                        <td>Active</td>
+                    </tr>
+                    <tr>
+                        <td>[Name]</td>
+                        <td>Business partner / Secretary</td>
+                        <td>Active</td>
+                    </tr>
+                    <tr>
+                        <td>[Name]</td>
+                        <td>Dental assistant</td>
+                        <td>Active</td>
+                    </tr>
+                </table>
+
+                <h2 class="second-title">Permission matrix</h2>
+                <table class="data perms-table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Calendar</th>
+                        <th>Billing</th>
+                        <th>Users</th>
+                    </tr>
+                    <tr>
+                        <td>Dentist / Owner</td>
+                        <td>Full</td>
+                        <td>Full</td>
+                        <td>Full</td>
+                        <td>Full</td>
+                    </tr>
+                    <tr>
+                        <td>Business Partner/Secretary</td>
+                        <td>Broad</td>
+                        <td>Full</td>
+                        <td>Full</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>Dental assistant</td>
+                        <td>Restricted</td>
+                        <td>View</td>
+                        <td>No</td>
+                        <td>No</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
