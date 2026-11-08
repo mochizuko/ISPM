@@ -40,3 +40,5 @@ document.querySelector(".forgot-link").addEventListener("click", function (e) {
 if (location.hash) {
     showPage(location.hash.slice(1));
 }
+
+//.
