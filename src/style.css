@@ -831,14 +831,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .calendar-bar { flex-wrap: wrap; gap: 10px; margin: 0 0 20px; }
 .calendar-bar .btn + .btn { margin-left: 0; }
 .month { display: flex; align-items: center; gap: 12px; margin-left: 12px; font-size: 1.1rem; color: var(--text); }
-.month a { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--surface); color: var(--primary); }
-.month a:hover { background: var(--primary); color: #fff; }
+.month button { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--surface); color: var(--primary); }
+.month button:hover { background: var(--primary); color: #fff; }
 .calendar-scroll { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 12px; }
 .calendar th { height: auto; padding: 12px 6px; background: var(--surface); color: var(--primary-dk); font-size: .88rem; font-weight: 600; vertical-align: middle; }
 .calendar th.today { background: var(--primary); color: #fff; }
 .calendar th:first-child { width: 80px; }
 .calendar td { height: 72px; padding: 4px; border: 1px solid var(--line); font-size: .85rem; }
-.calendar td.time { color: var(--muted); font-weight: 600; }
+.calendar th.time { color: var(--muted); font-weight: 600; }
 .event { height: auto; min-height: 100%; padding: 6px 8px; text-align: left; font-size: .8rem; color: var(--text); background: var(--surface); border: 0; border-left: 4px solid var(--brand-dent); border-radius: 6px; }
 .event b { color: var(--primary-dk); }
 .event + .event { margin-top: 4px; }
@@ -950,3 +950,10 @@ button.btn { font-family: var(--head); }
 }
 @media print { .sidebar, .topbar, .title-row .btn, .balance-box .btn { display: none !important; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* Native semantic controls retain the existing visual design. */
+button { font: inherit; color: inherit; cursor: pointer; }
+button.signin-btn, button.action-btn, button.forgot-link, .month button { border: 0; }
+button.signin-btn { width: 100%; }
+button.forgot-link { margin-inline: auto; background: transparent; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.calendar tbody th.time { height: 72px; background: #fff; border: 1px solid var(--line); font-size: .85rem; }

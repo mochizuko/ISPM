@@ -20,8 +20,10 @@ function showPage(name) {
 
     for (var j = 0; j < navLinks.length; j++) {
         navLinks[j].classList.remove("active");
+        navLinks[j].removeAttribute("aria-current");
         if (navLinks[j].dataset.page == navName) {
             navLinks[j].classList.add("active");
+            navLinks[j].setAttribute("aria-current", "page");
         }
     }
 }
@@ -32,6 +34,11 @@ for (var i = 0; i < pageLinks.length; i++) {
         showPage(this.dataset.page);
     });
 }
+
+document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    showPage("calendar");
+});
 
 document.querySelector(".forgot-link").addEventListener("click", function (e) {
     e.preventDefault();
@@ -92,18 +99,20 @@ function renderCal() {
     var today = ymd(new Date()), cols = [0, 1, 2, 3, 4, 5];
     if (dayView) { var t = Math.round((new Date(today + "T00:00") - ws) / 864e5); cols = [t >= 0 && t < 6 ? t : 0]; }
     function dt(c) { var d = new Date(ws); d.setDate(d.getDate() + c); return d; }
-    var h = "<tr><th></th>";
-    cols.forEach(function (c) { var d = dt(c); h += "<th" + (ymd(d) == today ? ' class="today"' : "") + ">" + d.toLocaleDateString("en-US", { weekday: "short" }) + " " + d.getDate() + "</th>"; });
+    var h = "<caption class=sr-only>Appointment schedule</caption><thead><tr><th scope=col>Time</th>";
+    cols.forEach(function (c) { var d = dt(c); h += "<th scope=col" + (ymd(d) == today ? ' class="today"' : "") + ">" + d.toLocaleDateString("en-US", { weekday: "short" }) + " " + d.getDate() + "</th>"; });
+    h += "</tr></thead><tbody>";
     hours.forEach(function (t, r) {
-        h += '</tr><tr><td class="time">' + t + "</td>";
+        h += '<tr><th scope="row" class="time">' + t + "</th>";
         cols.forEach(function (c) {
             var ev = "", k = ymd(dt(c));
             mock.forEach(function (m) { if (m[0] == c && m[1] == r) ev += '<div class="event"><b>Patient Name</b>Procedure</div>'; });
             bookings.forEach(function (b) { if (b.date == k && b.h == r) ev += '<div class="event"><b>' + esc(b.name) + "</b>" + esc(b.proc) + "</div>"; });
             h += "<td>" + ev + "</td>";
         });
+        h += "</tr>";
     });
-    $("#calGrid").innerHTML = h + "</tr>";
+    $("#calGrid").innerHTML = h + "</tbody>";
     $("#calMonth").textContent = ws.toLocaleDateString("en-US", { month: "long", year: "numeric" });
     $("#viewWeek").classList.toggle("gray", !dayView); $("#viewDay").classList.toggle("gray", dayView);
 }
@@ -131,14 +140,14 @@ $("#search").addEventListener("input", function () { renderPatients(this.value);
 /* ---- patients ---- */
 function renderPatients(q) {
     q = (q || "").trim().toLowerCase();
-    var h = "<tr><th>ID</th><th>Name</th><th>Phone</th><th>Last Visit</th><th>Balance</th></tr>", n = 0;
+    var h = "<caption class=sr-only>Patient directory</caption><thead><tr><th scope=col>ID</th><th scope=col>Name</th><th scope=col>Phone</th><th scope=col>Last Visit</th><th scope=col>Balance</th></tr></thead><tbody>", n = 0;
     patients.forEach(function (p) {
         if (q && (p.id + p.name + p.phone).toLowerCase().indexOf(q) < 0) return;
         n++;
-        h += '<tr><td>' + p.id + '</td><td><a href="#" data-open="' + p.id + '">' + esc(p.name) + "</a></td><td>" + esc(p.phone) + "</td><td>" + esc(p.last) + '</td><td class="' + (bal(p) ? "warn" : "ok") + '">' + peso(bal(p)) + "</td></tr>";
+        h += '<tr><td>' + p.id + '</td><td><a href="#patient" data-open="' + p.id + '">' + esc(p.name) + "</a></td><td>" + esc(p.phone) + "</td><td>" + esc(p.last) + '</td><td class="' + (bal(p) ? "warn" : "ok") + '">' + peso(bal(p)) + "</td></tr>";
     });
     if (!n) h += '<tr><td colspan="5">No patients match “' + esc(q) + "”. Try a name, ID, or phone number.</td></tr>";
-    $("#patientTable").innerHTML = h;
+    $("#patientTable").innerHTML = h + "</tbody>";
 }
 function npMsg(h) { $("#npResult").innerHTML = h; }
 on("#newPatientBtn", function () { $("#npName").scrollIntoView({ behavior: "smooth", block: "center" }); $("#npName").focus(); });
@@ -148,15 +157,15 @@ on("#npCheck", function () {
     var n = $("#npName").value.trim().toLowerCase(), b = $("#npBirth").value;
     if (!n || !b) return npMsg('<p class="form-error">Enter the full name and birthdate to check for an existing record.</p>');
     var m = patients.filter(function (p) { return p.name.toLowerCase() == n || (p.birth == b && p.name.toLowerCase().indexOf(n.split(" ")[0]) > -1); })[0];
-    if (m) npMsg("<b>Possible existing record</b><p>" + m.id + " " + esc(m.name) + "<br>Born " + (m.birth || "not recorded") + '</p><a href="#" class="action-btn open-btn" data-open="' + m.id + '">Open record</a>');
-    else npMsg("<b>No existing record found</b><p>It is safe to create a record for " + esc($("#npName").value.trim()) + '.</p><a href="#" class="action-btn open-btn" data-act="create">Create patient</a>');
+    if (m) npMsg("<b>Possible existing record</b><p>" + m.id + " " + esc(m.name) + "<br>Born " + (m.birth || "not recorded") + '</p><a href="#patient" class="action-btn open-btn" data-open="' + m.id + '">Open record</a>');
+    else npMsg("<b>No existing record found</b><p>It is safe to create a record for " + esc($("#npName").value.trim()) + '.</p><button type="button" class="action-btn open-btn" data-act="create">Create patient</button>');
 });
 function createPatient() {
     var nums = patients.map(function (p) { return parseInt(p.id.slice(2), 10); }), id = "P-" + ("00" + (Math.max.apply(null, nums) + 1)).slice(-3);
     var p = { id: id, name: $("#npName").value.trim(), phone: $("#npPhone").value.trim() || "—", birth: $("#npBirth").value, last: "—", tx: [], notes: [] };
     patients.push(p); renderPatients($("#search").value);
     $("#npForm").reset();
-    npMsg('<b class="ok">Patient added</b><p>' + id + " " + esc(p.name) + ' is now in the list.</p><a href="#" class="action-btn open-btn" data-open="' + id + '">Open record</a>');
+    npMsg('<b class="ok">Patient added</b><p>' + id + " " + esc(p.name) + ' is now in the list.</p><a href="#patient" class="action-btn open-btn" data-open="' + id + '">Open record</a>');
 }
 
 /* ---- patient record tabs ---- */
@@ -166,7 +175,7 @@ function fld(l, v) { return "<p><b>" + l + ":</b> " + esc(v || "—") + "</p>"; 
 function renderTab() {
     var p = cur, h = "";
     $("#pName").textContent = p.name; $("#pId").textContent = p.id;
-    document.querySelectorAll("[data-tab]").forEach(function (a) { a.classList.toggle("current", a.dataset.tab == tab); });
+    document.querySelectorAll("[data-tab]").forEach(function (a) { a.classList.toggle("current", a.dataset.tab == tab); a.setAttribute("aria-pressed", String(a.dataset.tab == tab)); });
     var contact = '<div class="box"><h3>Contact details</h3>' + fld("Age / birthdate", age(p.birth)) + fld("Phone", p.phone) + fld("Address", p.address) + fld("Emergency contact", p.emergency) + "</div>";
     var med = '<div class="box"><h3>Medical condition</h3>' + fld("Conditions", p.conditions) + fld("Allergies", p.allergies) + fld("Medications", p.meds) + fld("Notes for dentist", p.dnote) + "</div>";
     if (tab == "overview") {
@@ -177,18 +186,18 @@ function renderTab() {
     } else if (tab == "medical") {
         h = '<div class="boxes">' + med + '<div class="box sum"><h3>Emergency contact</h3>' + fld("Name and phone", p.emergency) + "</div></div>";
     } else if (tab == "treatments") {
-        h = '<div class="table-scroll"><table class="data"><tr><th>Date</th><th>Tooth</th><th>Procedure</th><th>Dentist</th><th>Status</th></tr>';
+        h = '<div class="table-scroll"><table class="data"><caption class="sr-only">Patient treatments</caption><thead><tr><th scope=col>Date</th><th scope=col>Tooth</th><th scope=col>Procedure</th><th scope=col>Dentist</th><th scope=col>Status</th></tr></thead><tbody>';
         p.tx.forEach(function (t) { var b = t.cost - t.paid; h += "<tr><td>" + t.date + "</td><td>" + esc(t.tooth) + "</td><td>" + esc(t.proc) + "</td><td>" + esc(t.dentist) + '</td><td><span class="badge ' + (!b ? "ok" : t.paid ? "warn" : "err") + '">' + (!b ? "Paid" : t.paid ? "Partial" : "Unpaid") + "</span></td></tr>"; });
         if (!p.tx.length) h += '<tr><td colspan="5">No treatments recorded yet.</td></tr>';
-        h += "</table></div>";
+        h += "</tbody></table></div>";
     } else if (tab == "billing") {
         var cost = p.tx.reduce(function (a, t) { return a + t.cost; }, 0);
-        h = '<div class="boxes"><div class="box sum"><h3>Total billed</h3><p class="big">' + peso(cost) + '</p></div><div class="box sum"><h3>Outstanding balance</h3><p class="big ' + (bal(p) ? "warn" : "ok") + '">' + peso(bal(p)) + '</p></div></div><p style="margin-top:20px"><a href="#" class="btn gray" data-go="billing">Open full ledger</a></p>';
+        h = '<div class="boxes"><div class="box sum"><h3>Total billed</h3><p class="big">' + peso(cost) + '</p></div><div class="box sum"><h3>Outstanding balance</h3><p class="big ' + (bal(p) ? "warn" : "ok") + '">' + peso(bal(p)) + '</p></div></div><p style="margin-top:20px"><a href="#billing" class="btn gray" data-go="billing">Open full ledger</a></p>';
     } else {
         h = '<div class="box"><h3>Notes</h3>';
         p.notes.forEach(function (n) { h += "<p><b>" + n.date + ":</b> " + esc(n.text) + "</p>"; });
         if (!p.notes.length) h += "<p>No notes yet. Add the first one below.</p>";
-        h += '<div class="note-form"><input id="noteIn" type="text" placeholder="Write a note about this patient" aria-label="New note"><a href="#" class="btn gray" data-act="note">Add note</a></div></div>';
+        h += '<div class="note-form"><input id="noteIn" type="text" placeholder="Write a note about this patient" aria-label="New note"><button type="button" class="btn gray" data-act="note">Add note</button></div></div>';
     }
     $("#tabBody").innerHTML = h;
 }
@@ -197,10 +206,10 @@ function renderTab() {
 function renderBilling() {
     var p = cur;
     $("#ledgerName").textContent = p.name;
-    var h = "<tr><th>Date</th><th>Tooth</th><th>Procedure</th><th>Dentist</th><th>Cost</th><th>Paid</th><th>Balance</th></tr>";
+    var h = "<caption class=sr-only>Patient ledger</caption><thead><tr><th scope=col>Date</th><th scope=col>Tooth</th><th scope=col>Procedure</th><th scope=col>Dentist</th><th scope=col>Cost</th><th scope=col>Paid</th><th scope=col>Balance</th></tr></thead><tbody>";
     p.tx.forEach(function (t) { var b = t.cost - t.paid; h += "<tr><td>" + t.date + "</td><td>" + esc(t.tooth) + "</td><td>" + esc(t.proc) + "</td><td>" + esc(t.dentist) + "</td><td>" + peso(t.cost) + "</td><td>" + peso(t.paid) + '</td><td class="' + (b ? "warn" : "ok") + '">' + peso(b) + "</td></tr>"; });
     if (!p.tx.length) h += '<tr><td colspan="7">No treatments yet. Choose Add treatment to start this ledger.</td></tr>';
-    $("#ledgerTable").innerHTML = h; $("#balTotal").textContent = peso(bal(p));
+    $("#ledgerTable").innerHTML = h + "</tbody>"; $("#balTotal").textContent = peso(bal(p));
 }
 function refreshAll() { renderBilling(); renderPatients($("#search").value); renderTab(); }
 on("#addTx", function () {
@@ -228,9 +237,9 @@ on("#printBtn", function () { window.print(); });
 
 /* ---- settings ---- */
 function renderUsers() {
-    var h = "<tr><th>Name</th><th>Role</th><th>Status</th></tr>";
+    var h = "<caption class=sr-only>Clinic users</caption><thead><tr><th scope=col>Name</th><th scope=col>Role</th><th scope=col>Status</th></tr></thead><tbody>";
     users.forEach(function (u) { h += "<tr><td>" + esc(u[0]) + "</td><td>" + esc(u[1]) + '</td><td><span class="badge ' + (u[2] == "Active" ? "ok" : "warn") + '">' + u[2] + "</span></td></tr>"; });
-    $("#usersTable").innerHTML = h;
+    $("#usersTable").innerHTML = h + "</tbody>";
 }
 on("#addUser", function () {
     modal("Add user", [{ l: "Full name", ph: "e.g. Ana Reyes" }, { l: "Role", opts: ["Dentist / Owner", "Business partner / Secretary", "Dental assistant"] }, { l: "Status", opts: ["Active", "Inactive"] }], "Add user", function (v) {
@@ -257,7 +266,6 @@ document.addEventListener("click", function (e) {
         if (t) { cur.notes.unshift({ date: new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit" }), text: t }); renderTab(); }
     }
 });
-["#email", "#password"].forEach(function (s) { $(s).addEventListener("keydown", function (e) { if (e.key == "Enter") $(".signin-btn").click(); }); });
 
 document.querySelectorAll(".data").forEach(function (t) { var w = document.createElement("div"); w.className = "table-scroll"; t.parentNode.insertBefore(w, t); w.appendChild(t); });
 renderCal(); renderPatients(); renderUsers(); renderBilling(); renderTab();

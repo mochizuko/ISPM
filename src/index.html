@@ -12,89 +12,91 @@
 </head>
 <body>
 
-    <div id="login">
-        <div class="login-card">
+    <section id="login" aria-labelledby="loginTitle">
+        <form class="login-card" id="loginForm" novalidate aria-labelledby="loginTitle">
             <div class="logo">
                 <svg class="mark" viewBox="0 0 32 32" width="34" height="34" role="img" aria-label="DentSync logo"><path d="M16 4c-3-2-9-1-9 6 0 5 2 7 3 12 .5 3 3 3 3.5 0l2.5-8 2.5 8c.5 3 3 3 3.5 0 1-5 3-7 3-12 0-7-6-8-9-6z" fill="#46c1d8"/></svg>
                 <span class="dent">Dent</span><span class="sync">Sync</span>
             </div>
-            <h1>Login</h1>
+            <h1 id="loginTitle">Login</h1>
             <hr>
             <label for="email">Email</label>
             <input class="login-field" id="email" type="email" placeholder="name@clinic.com" autocomplete="email">
             <label for="password">Password</label>
             <input class="login-field" id="password" type="password" placeholder="Enter your password" autocomplete="current-password">
-            <a href="#" class="signin-btn" data-page="calendar">Sign In</a>
-            <a href="#" class="forgot-link">Forgot Password?</a>
-        </div>
-    </div>
+            <button type="submit" class="signin-btn">Sign In</button>
+            <button type="button" class="forgot-link">Forgot Password?</button>
+        </form>
+    </section>
 
     <div id="app">
 
-        <div class="sidebar">
+        <aside class="sidebar" aria-label="Clinic sidebar">
             <div class="logo">
                 <svg class="mark" viewBox="0 0 32 32" width="34" height="34" role="img" aria-label="DentSync logo"><path d="M16 4c-3-2-9-1-9 6 0 5 2 7 3 12 .5 3 3 3 3.5 0l2.5-8 2.5 8c.5 3 3 3 3.5 0 1-5 3-7 3-12 0-7-6-8-9-6z" fill="#46c1d8"/></svg>
                 <span class="dent">Dent</span><span class="sync">Sync</span>
             </div>
-            <div class="nav">
-                <a href="#" data-page="calendar"><span class="icon"></span>Calendar</a>
-                <a href="#" data-page="patients"><span class="icon"></span>Patients</a>
-                <a href="#" data-page="billing"><span class="icon"></span>Billing</a>
-                <a href="#" data-page="settings"><span class="icon"></span>Settings</a>
-            </div>
-        </div>
+            <nav class="nav" aria-label="Main navigation">
+                <a href="#calendar" data-page="calendar"><span class="icon" aria-hidden="true"></span>Calendar</a>
+                <a href="#patients" data-page="patients"><span class="icon" aria-hidden="true"></span>Patients</a>
+                <a href="#billing" data-page="billing"><span class="icon" aria-hidden="true"></span>Billing</a>
+                <a href="#settings" data-page="settings"><span class="icon" aria-hidden="true"></span>Settings</a>
+            </nav>
+        </aside>
 
-        <div class="main">
+        <main class="main" id="mainContent">
+            <h1 class="sr-only">DentSync clinic dashboard</h1>
 
-            <div class="topbar">
-                <div class="search-box">
+            <header class="topbar">
+                <search class="search-box" aria-label="Patient search">
                     <input id="search" type="search" placeholder="Search patient name, ID, or phone" aria-label="Search patients">
-                    <svg width="30" height="30" viewBox="0 0 30 30">
+                    <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" focusable="false">
                         <circle cx="12" cy="12" r="8" fill="none" stroke="#444" stroke-width="2"/>
                         <path d="M18 18l9 9" stroke="#444" stroke-width="2"/>
                     </svg>
-                </div>
-                <span class="icon bell"></span>
+                </search>
+                <span class="icon bell" aria-hidden="true"></span>
                 <div class="user-box">
                     <span class="avatar">DR</span>
                     <span class="user-name">Name (Role)</span>
                     <span class="arrow"></span>
                 </div>
-            </div>
+            </header>
 
-            <div class="page" id="shell">
+            <section class="page" id="shell" aria-label="Dashboard">
                 <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <line x1="0" y1="0" x2="100" y2="100" stroke="#000" stroke-width="3" vector-effect="non-scaling-stroke"/>
                     <line x1="100" y1="0" x2="0" y2="100" stroke="#000" stroke-width="3" vector-effect="non-scaling-stroke"/>
                 </svg>
-            </div>
+            </section>
 
-            <div class="page" id="calendar">
+            <section class="page" id="calendar" aria-labelledby="calendarTitle">
+                <h2 id="calendarTitle" class="sr-only">Appointment calendar</h2>
                 <div class="calendar-bar">
-                    <a href="#" class="btn" id="calToday">Today</a>
-                    <div class="month"><a href="#" id="calPrev" aria-label="Previous week">&lt;</a><span id="calMonth"></span><a href="#" id="calNext" aria-label="Next week">&gt;</a></div>
-                    <a href="#" class="btn gray" id="viewWeek">Week</a>
-                    <a href="#" class="btn" id="viewDay">Day</a>
-                    <a href="#" class="btn cta small-text" id="newBooking">New Booking +</a>
+                    <button type="button" class="btn" id="calToday">Today</button>
+                    <div class="month"><button type="button" id="calPrev" aria-label="Previous week">&lt;</button><span id="calMonth"></span><button type="button" id="calNext" aria-label="Next week">&gt;</button></div>
+                    <button type="button" class="btn gray" id="viewWeek">Week</button>
+                    <button type="button" class="btn" id="viewDay">Day</button>
+                    <button type="button" class="btn cta small-text" id="newBooking">New Booking +</button>
                 </div>
                 <div class="calendar-scroll">
-                    <table class="calendar" id="calGrid"></table>
+                    <table class="calendar" id="calGrid"><caption class="sr-only">Appointment schedule</caption></table>
                 </div>
-            </div>
+            </section>
 
-            <div class="page" id="patients">
+            <section class="page" id="patients" aria-labelledby="patientsTitle">
                 <div class="patients-layout">
 
                     <div class="patients-list">
-                        <div class="list-head">
-                            <h2>Patients</h2>
-                            <a href="#" class="btn cta" id="newPatientBtn">+ New Patient</a>
-                        </div>
-                        <table class="data patients-table" id="patientTable"></table>
+                        <header class="list-head">
+                            <h2 id="patientsTitle">Patients</h2>
+                            <button type="button" class="btn cta" id="newPatientBtn">+ New Patient</button>
+                        </header>
+                        <table class="data patients-table" id="patientTable"><caption class="sr-only">Patient directory</caption></table>
                     </div>
 
-                    <form class="new-patient" id="npForm" novalidate>
-                        <h3>New Patient</h3>
+                    <form class="new-patient" id="npForm" novalidate aria-labelledby="newPatientTitle">
+                        <h3 id="newPatientTitle">New Patient</h3>
                         <small>Step 1: Check for an existing record</small>
                         <label for="npName">Full Name</label>
                         <input id="npName" type="text" placeholder="e.g. Maria Santos">
@@ -102,60 +104,63 @@
                         <input id="npBirth" type="date">
                         <label for="npPhone">Phone (optional)</label>
                         <input id="npPhone" type="tel" placeholder="09xx xxx xxxx">
-                        <a href="#" class="action-btn check-btn" id="npCheck">Check records</a>
+                        <button type="button" class="action-btn check-btn" id="npCheck">Check records</button>
                         <div class="found-box" id="npResult" aria-live="polite"><p>Check the name and birthdate first. Any matching record appears here.</p></div>
                     </form>
 
                 </div>
-            </div>
+            </section>
 
-            <div class="page" id="patient">
-                <div class="patient-head">
-                    <a href="#" class="back" data-page="patients">&lt; Patients</a>
-                    <div class="patient-name"><span id="pName">Trishia Maralit</span><span id="pId">P-002</span></div>
-                    <a href="#" class="btn cta" id="bookBtn">Book</a>
-                    <a href="#" class="btn plain">Edit</a>
-                </div>
-                <div class="tabs" role="tablist">
-                    <a href="#" class="tab current" data-tab="overview">Overview</a>
-                    <a href="#" class="tab" data-tab="medical">Medical</a>
-                    <a href="#" class="tab" data-tab="treatments">Treatments</a>
-                    <a href="#" class="tab" data-tab="billing">Billing</a>
-                    <a href="#" class="tab" data-tab="notes">Notes</a>
+            <section class="page" id="patient" aria-labelledby="pName">
+                <header class="patient-head">
+                    <a href="#patients" class="back" data-page="patients">&lt; Patients</a>
+                    <h2 class="patient-name"><span id="pName">Trishia Maralit</span><span id="pId">P-002</span></h2>
+                    <button type="button" class="btn cta" id="bookBtn">Book</button>
+                    <button type="button" class="btn plain">Edit</button>
+                </header>
+                <div class="tabs" role="group" aria-label="Patient record views">
+                    <button type="button" class="tab current" data-tab="overview">Overview</button>
+                    <button type="button" class="tab" data-tab="medical">Medical</button>
+                    <button type="button" class="tab" data-tab="treatments">Treatments</button>
+                    <button type="button" class="tab" data-tab="billing">Billing</button>
+                    <button type="button" class="tab" data-tab="notes">Notes</button>
                 </div>
                 <div id="tabBody"></div>
-            </div>
+            </section>
 
-            <div class="page" id="billing">
-                <div class="title-row">
-                    <h2><span id="ledgerName">Trishia Maralit</span><span>Ledger</span></h2>
-                    <a href="#" class="btn gray" id="addTx">Add treatment</a>
-                </div>
-                <table class="data ledger-table" id="ledgerTable"></table>
+            <section class="page" id="billing" aria-labelledby="billingTitle">
+                <header class="title-row">
+                    <h2 id="billingTitle"><span id="ledgerName">Trishia Maralit</span><span>Ledger</span></h2>
+                    <button type="button" class="btn gray" id="addTx">Add treatment</button>
+                </header>
+                <table class="data ledger-table" id="ledgerTable"><caption class="sr-only">Patient ledger</caption></table>
                 <div class="balance-box">
                     <p>Outstanding balance</p>
                     <strong id="balTotal">₱ 2,000</strong>
-                    <a href="#" class="btn cta" id="recordPay">Record Payment</a>
-                    <a href="#" class="btn plain" id="printBtn">Print receipt</a>
+                    <button type="button" class="btn cta" id="recordPay">Record Payment</button>
+                    <button type="button" class="btn plain" id="printBtn">Print receipt</button>
                 </div>
-            </div>
+            </section>
 
-            <div class="page" id="settings">
-                <div class="title-row">
-                    <h2>User and Roles</h2>
-                    <a href="#" class="btn cta" id="addUser">+ Add user</a>
-                </div>
-                <table class="data users-table" id="usersTable"></table>
+            <section class="page" id="settings" aria-labelledby="settingsTitle">
+                <header class="title-row">
+                    <h2 id="settingsTitle">Users and Roles</h2>
+                    <button type="button" class="btn cta" id="addUser">+ Add user</button>
+                </header>
+                <table class="data users-table" id="usersTable"><caption class="sr-only">Clinic users</caption></table>
 
                 <h2 class="second-title">Permission matrix</h2>
-                <table class="data perms-table">
+                <table class="data perms-table"><caption class="sr-only">Role permissions</caption>
+                    <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Role</th>
-                        <th>Calendar</th>
-                        <th>Billing</th>
-                        <th>Users</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Calendar</th>
+                        <th scope="col">Billing</th>
+                        <th scope="col">Users</th>
                     </tr>
+                    </thead>
+                    <tbody>
                     <tr>
                         <td>Dentist / Owner</td>
                         <td>Full</td>
@@ -177,13 +182,14 @@
                         <td>No</td>
                         <td>No</td>
                     </tr>
+                    </tbody>
                 </table>
-            </div>
+            </section>
 
-        </div>
+        </main>
     </div>
 
-    <dialog id="dlg">
+    <dialog id="dlg" aria-labelledby="dlgTitle">
         <form id="dlgForm" novalidate>
             <h2 id="dlgTitle"></h2>
             <div id="dlgBody"></div>
