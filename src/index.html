@@ -26,16 +26,17 @@
             <input class="login-field" id="password" type="password" placeholder="Enter your password" autocomplete="current-password">
             <button type="submit" class="signin-btn">Sign In</button>
             <button type="button" class="forgot-link">Forgot Password?</button>
+            <p id="loginStatus" class="login-status" role="status"></p>
         </form>
     </section>
 
     <div id="app">
 
         <aside class="sidebar" aria-label="Clinic sidebar">
-            <div class="logo">
+            <button type="button" class="logo" id="reloadBtn" aria-label="Reload DentSync home">
                 <svg class="mark" viewBox="0 0 32 32" width="34" height="34" role="img" aria-label="DentSync logo"><path d="M16 4c-3-2-9-1-9 6 0 5 2 7 3 12 .5 3 3 3 3.5 0l2.5-8 2.5 8c.5 3 3 3 3.5 0 1-5 3-7 3-12 0-7-6-8-9-6z" fill="#46c1d8"/></svg>
                 <span class="dent">Dent</span><span class="sync">Sync</span>
-            </div>
+            </button>
             <nav class="nav" aria-label="Main navigation">
                 <a href="#calendar" data-page="calendar"><span class="icon" aria-hidden="true"></span>Calendar</a>
                 <a href="#patients" data-page="patients"><span class="icon" aria-hidden="true"></span>Patients</a>
@@ -56,10 +57,15 @@
                     </svg>
                 </search>
                 <span class="icon bell" aria-hidden="true"></span>
-                <div class="user-box">
-                    <span class="avatar">DR</span>
-                    <span class="user-name">Name (Role)</span>
-                    <span class="arrow"></span>
+                <div class="profile-menu">
+                    <button type="button" class="user-box" id="profileBtn" aria-expanded="false" aria-controls="profileDropdown" aria-label="Account options">
+                        <span class="avatar" aria-hidden="true">DR</span>
+                        <span class="user-name">Name (Role)</span>
+                        <span class="arrow" aria-hidden="true"></span>
+                    </button>
+                    <div class="profile-dropdown" id="profileDropdown" hidden>
+                        <button type="button" class="logout-btn" id="logoutBtn">Log Out</button>
+                    </div>
                 </div>
             </header>
 
@@ -116,7 +122,7 @@
                     <a href="#patients" class="back" data-page="patients">&lt; Patients</a>
                     <h2 class="patient-name"><span id="pName">Trishia Maralit</span><span id="pId">P-002</span></h2>
                     <button type="button" class="btn cta" id="bookBtn">Book</button>
-                    <button type="button" class="btn plain">Edit</button>
+                    <button type="button" class="btn plain" id="editPatientBtn">Edit</button>
                 </header>
                 <div class="tabs" role="group" aria-label="Patient record views">
                     <button type="button" class="tab current" data-tab="overview">Overview</button>

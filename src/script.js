@@ -40,10 +40,6 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
     showPage("calendar");
 });
 
-document.querySelector(".forgot-link").addEventListener("click", function (e) {
-    e.preventDefault();
-});
-
 if (location.hash) {
     showPage(location.hash.slice(1));
 }
@@ -52,7 +48,7 @@ if (location.hash) {
 /* ===== DentSync interactions (in-memory demo data, resets on refresh) ===== */
 var $ = function (s) { return document.querySelector(s); };
 var peso = function (n) { return "₱ " + Number(n).toLocaleString("en-US"); };
-var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
 function on(sel, fn) { $(sel).addEventListener("click", function (e) { e.preventDefault(); fn(e); }); }
 function ymd(d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
 function row(d, t, p, c, paid) { return { date: d, tooth: t, proc: p, dentist: "Dr. [Name]", cost: c, paid: paid }; }
@@ -85,6 +81,7 @@ function modal(title, fields, cta, ok) {
     fields.forEach(function (f, i) { if (f.opts && f.v) $("#f" + i).value = f.v; });
     $("#dlgForm").onsubmit = function (e) {
         e.preventDefault();
+        if (!this.reportValidity()) return;
         var err = ok(fields.map(function (f, i) { return $("#f" + i).value.trim(); }));
         if (err) $("#dlgErr").textContent = err; else dlg.close();
     };
@@ -92,12 +89,65 @@ function modal(title, fields, cta, ok) {
 }
 $("#dlgCancel").onclick = function () { dlg.close(); };
 
+/* This front-end demo has no account server or email delivery service. */
+on(".forgot-link", function () {
+    modal("Sign-in help", [{ l: "Email", t: "email", v: $("#email").value }], "Show instructions", function (v) {
+        if (!v[0]) return "Enter your email address.";
+        $("#email").value = v[0];
+        $("#loginStatus").textContent = "This is a demo: no password or reset email is needed. Click Sign In to continue. For a real clinic account, contact your administrator.";
+    });
+});
+
+function closeProfileDropdown() {
+    $("#profileDropdown").hidden = true;
+    $("#profileBtn").setAttribute("aria-expanded", "false");
+}
+on("#profileBtn", function () {
+    var open = $("#profileDropdown").hidden;
+    $("#profileDropdown").hidden = !open;
+    $("#profileBtn").setAttribute("aria-expanded", String(open));
+});
+document.addEventListener("click", function (e) {
+    if (!e.target.closest(".profile-menu")) closeProfileDropdown();
+});
+$(".profile-menu").addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        closeProfileDropdown();
+        $("#profileBtn").focus();
+    }
+});
+$(".profile-menu").addEventListener("focusout", function (e) {
+    if (!this.contains(e.relatedTarget)) closeProfileDropdown();
+});
+on("#reloadBtn", function () {
+    history.replaceState(null, "", location.pathname + location.search + "#calendar");
+    window.location.reload();
+});
+
+on("#logoutBtn", function () {
+    closeProfileDropdown();
+    if (dlg.open) dlg.close();
+    app.style.display = "none";
+    loginBox.style.display = "flex";
+    $("#loginForm").reset();
+    $("#loginStatus").textContent = "You have been logged out.";
+    $("#search").value = "";
+    renderPatients();
+    pages.forEach(function (page) { page.classList.remove("active"); });
+    navLinks.forEach(function (link) {
+        link.classList.remove("active");
+        link.removeAttribute("aria-current");
+    });
+    history.replaceState(null, "", location.pathname + location.search);
+    $("#email").focus();
+});
+
 /* ---- calendar (auto-built week, sample events are mockup only) ---- */
 function monday(d) { d = new Date(d); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d; }
-var ws = monday(new Date()), dayView = false, mock = [[0, 0], [2, 0], [1, 1], [5, 1], [3, 2], [4, 3]];
+var ws = monday(new Date()), selectedDay = new Date(), dayView = false, mock = [[0, 0], [2, 0], [1, 1], [5, 1], [3, 2], [4, 3]];
 function renderCal() {
     var today = ymd(new Date()), cols = [0, 1, 2, 3, 4, 5];
-    if (dayView) { var t = Math.round((new Date(today + "T00:00") - ws) / 864e5); cols = [t >= 0 && t < 6 ? t : 0]; }
+    if (dayView) cols = [Math.round((new Date(ymd(selectedDay) + "T00:00") - ws) / 864e5)];
     function dt(c) { var d = new Date(ws); d.setDate(d.getDate() + c); return d; }
     var h = "<caption class=sr-only>Appointment schedule</caption><thead><tr><th scope=col>Time</th>";
     cols.forEach(function (c) { var d = dt(c); h += "<th scope=col" + (ymd(d) == today ? ' class="today"' : "") + ">" + d.toLocaleDateString("en-US", { weekday: "short" }) + " " + d.getDate() + "</th>"; });
@@ -113,12 +163,20 @@ function renderCal() {
         h += "</tr>";
     });
     $("#calGrid").innerHTML = h + "</tbody>";
-    $("#calMonth").textContent = ws.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    $("#calMonth").textContent = (dayView ? selectedDay : ws).toLocaleDateString("en-US", { month: "long", year: "numeric" });
     $("#viewWeek").classList.toggle("gray", !dayView); $("#viewDay").classList.toggle("gray", dayView);
+    $("#viewWeek").setAttribute("aria-pressed", String(!dayView));
+    $("#viewDay").setAttribute("aria-pressed", String(dayView));
+    $("#calPrev").setAttribute("aria-label", dayView ? "Previous day" : "Previous week");
+    $("#calNext").setAttribute("aria-label", dayView ? "Next day" : "Next week");
 }
-on("#calPrev", function () { ws.setDate(ws.getDate() - 7); renderCal(); });
-on("#calNext", function () { ws.setDate(ws.getDate() + 7); renderCal(); });
-on("#calToday", function () { ws = monday(new Date()); renderCal(); });
+function moveCalendar(direction) {
+    selectedDay.setDate(selectedDay.getDate() + direction * (dayView ? 1 : 7));
+    ws = monday(selectedDay); renderCal();
+}
+on("#calPrev", function () { moveCalendar(-1); });
+on("#calNext", function () { moveCalendar(1); });
+on("#calToday", function () { selectedDay = new Date(); ws = monday(selectedDay); renderCal(); });
 on("#viewWeek", function () { dayView = false; renderCal(); });
 on("#viewDay", function () { dayView = true; renderCal(); });
 function bookModal(preset) {
@@ -128,7 +186,7 @@ function bookModal(preset) {
         if (isNaN(d)) return "Choose a date.";
         if (d.getDay() === 0) return "The calendar runs Monday to Saturday. Pick another day.";
         bookings.push({ date: v[2], h: hours.indexOf(v[3]), name: v[0], proc: v[1] });
-        ws = monday(d); renderCal(); showPage("calendar");
+        selectedDay = d; ws = monday(d); renderCal(); showPage("calendar");
     });
 }
 on("#newBooking", function () { bookModal(false); });
@@ -212,12 +270,31 @@ function renderBilling() {
     $("#ledgerTable").innerHTML = h + "</tbody>"; $("#balTotal").textContent = peso(bal(p));
 }
 function refreshAll() { renderBilling(); renderPatients($("#search").value); renderTab(); }
+on("#editPatientBtn", function () {
+    var patient = cur;
+    var fields = [
+        { l: "Full name", v: patient.name }, { l: "Birthdate", t: "date", v: patient.birth },
+        { l: "Phone", t: "tel", v: patient.phone }, { l: "Address", v: patient.address },
+        { l: "Emergency contact", v: patient.emergency }, { l: "Conditions", v: patient.conditions },
+        { l: "Allergies", v: patient.allergies }, { l: "Medications", v: patient.meds },
+        { l: "Notes for dentist", v: patient.dnote }
+    ];
+    modal("Edit patient", fields, "Save changes", function (v) {
+        if (!v[0]) return "Enter the patient's full name.";
+        if (v[1] && v[1] > ymd(new Date())) return "Birthdate cannot be in the future.";
+        var keys = ["name", "birth", "phone", "address", "emergency", "conditions", "allergies", "meds", "dnote"];
+        // Keep existing appointments in sync with a changed patient name.
+        bookings.forEach(function (b) { if (b.name === patient.name) b.name = v[0]; });
+        keys.forEach(function (key, i) { patient[key] = v[i]; });
+        refreshAll(); renderCal();
+    });
+});
 on("#addTx", function () {
     modal("Add treatment", [{ l: "Date", t: "date", v: ymd(new Date()) }, { l: "Tooth", ph: "e.g. #14" }, { l: "Procedure", ph: "e.g. Filling" }, { l: "Dentist", v: "Dr. [Name]" }, { l: "Cost (₱)", t: "number" }, { l: "Paid now (₱)", t: "number", v: "0" }], "Add treatment", function (v) {
         var c = parseFloat(v[4]), pd = parseFloat(v[5] || 0);
         if (!v[0] || !v[1] || !v[2]) return "Fill in the date, tooth, and procedure.";
-        if (!(c > 0)) return "Enter a cost greater than zero.";
-        if (pd < 0 || pd > c) return "Paid amount must be between ₱ 0 and the cost.";
+        if (!Number.isFinite(c) || !(c > 0)) return "Enter a cost greater than zero.";
+        if (!Number.isFinite(pd) || pd < 0 || pd > c) return "Paid amount must be between ₱ 0 and the cost.";
         cur.tx.push({ date: v[0].slice(5).replace("-", "/"), tooth: v[1], proc: v[2], dentist: v[3] || "Dr. [Name]", cost: c, paid: pd });
         cur.last = new Date(v[0] + "T00:00").toLocaleDateString("en-US", { month: "short", day: "2-digit" });
         refreshAll();
@@ -227,7 +304,7 @@ on("#recordPay", function () {
     modal("Record payment", [{ l: "Amount (₱)", t: "number", ph: "Outstanding: " + peso(bal(cur)) }, { l: "Method", opts: ["Cash", "GCash", "Card", "Bank transfer"] }], "Record payment", function (v) {
         var a = parseFloat(v[0]);
         if (!bal(cur)) return "This ledger has no outstanding balance.";
-        if (!(a > 0)) return "Enter an amount greater than zero.";
+        if (!Number.isFinite(a) || !(a > 0)) return "Enter an amount greater than zero.";
         if (a > bal(cur)) return "Amount is more than the outstanding balance of " + peso(bal(cur)) + ".";
         cur.tx.forEach(function (t) { var take = Math.min(t.cost - t.paid, a); t.paid += take; a -= take; });
         refreshAll();
