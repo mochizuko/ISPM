@@ -3,8 +3,36 @@ var app = document.getElementById("app");
 var pages = document.querySelectorAll(".page");
 var navLinks = document.querySelectorAll(".nav a");
 var pageLinks = document.querySelectorAll("[data-page]");
+var currentRole = null;
+var roleLabels = {
+    owner: "Dentist / Owner",
+    secretary: "Business Partner / Secretary",
+    assistant: "Dental Assistant"
+};
+var rolePermissions = {
+    owner: ["calendar", "patients", "patient", "billing", "settings"],
+    secretary: ["calendar", "patients", "patient", "billing"],
+    assistant: ["calendar", "patients", "patient"]
+};
+currentRole = sessionStorage.getItem("dentsyncRole");
+if (!rolePermissions[currentRole]) currentRole = null;
+
+function applyRolePermissions() {
+    var allowed = currentRole ? rolePermissions[currentRole] : [];
+    navLinks.forEach(function (link) {
+        link.hidden = allowed.indexOf(link.dataset.page) === -1;
+    });
+    if (currentRole) {
+        $(".user-name").textContent = "Name (" + roleLabels[currentRole] + ")";
+        $(".avatar").textContent = currentRole === "owner" ? "DR" : currentRole === "secretary" ? "BP" : "DA";
+    }
+}
 
 function showPage(name) {
+    if (!currentRole) return;
+    if (rolePermissions[currentRole].indexOf(name) === -1) {
+        name = "calendar";
+    }
     loginBox.style.display = "none";
     app.style.display = "flex";
 
@@ -37,10 +65,22 @@ for (var i = 0; i < pageLinks.length; i++) {
 
 document.getElementById("loginForm").addEventListener("submit", function (e) {
     e.preventDefault();
-    showPage("calendar");
+    var roleSelect = $("#role");
+    if (!roleSelect.value) {
+        $("#loginStatus").textContent = "Please select a role.";
+        roleSelect.focus();
+        return;
+    }
+    currentRole = roleSelect.value;
+    sessionStorage.setItem("dentsyncRole", currentRole);
+    applyRolePermissions();
+    var allowed = rolePermissions[currentRole];
+    var hashName = location.hash ? location.hash.slice(1) : "";
+    showPage(allowed.indexOf(hashName) !== -1 ? hashName : "calendar");
 });
 
-if (location.hash) {
+applyRolePermissions();
+if (currentRole && location.hash) {
     showPage(location.hash.slice(1));
 }
 
@@ -127,6 +167,9 @@ on("#reloadBtn", function () {
 on("#logoutBtn", function () {
     closeProfileDropdown();
     if (dlg.open) dlg.close();
+    currentRole = null;
+    sessionStorage.removeItem("dentsyncRole");
+    navLinks.forEach(function (link) { link.hidden = false; });
     app.style.display = "none";
     loginBox.style.display = "flex";
     $("#loginForm").reset();

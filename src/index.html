@@ -24,6 +24,13 @@
             <input class="login-field" id="email" type="email" placeholder="name@clinic.com" autocomplete="email">
             <label for="password">Password</label>
             <input class="login-field" id="password" type="password" placeholder="Enter your password" autocomplete="current-password">
+            <label for="role">Role</label>
+            <select class="login-field role-select" id="role" required>
+                <option value="">Select a role</option>
+                <option value="owner">Dentist / Owner</option>
+                <option value="secretary">Business Partner / Secretary</option>
+                <option value="assistant">Dental Assistant</option>
+            </select>
             <button type="submit" class="signin-btn">Sign In</button>
             <button type="button" class="forgot-link">Forgot Password?</button>
             <p id="loginStatus" class="login-status" role="status"></p>
