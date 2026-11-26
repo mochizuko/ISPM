@@ -19,19 +19,20 @@
                 <img class="logo-text" src="images/dentsync-text.png" alt="DentSync">
             </div>
             <h1 id="loginTitle">Login</h1>
+            <p class="system-notice" id="authHelp" role="status">Choose the role for this sign-in, then enter that account's email and password.</p>
             <hr>
             <label for="email">Email</label>
-            <input class="login-field" id="email" type="email" placeholder="name@clinic.com" autocomplete="email">
-            <label for="password">Password</label>
-            <input class="login-field" id="password" type="password" placeholder="Enter your password" autocomplete="current-password">
-            <label for="role">Role</label>
+            <input class="login-field" id="email" type="email" placeholder="name@clinic.com" autocomplete="email" required>
+            <label for="role">Sign in as</label>
             <select class="login-field role-select" id="role" required>
                 <option value="">Select a role</option>
-                <option value="dentist">Dentist</option>
-                <option value="partner">Business Partner</option>
-                <option value="assistant">Assistant</option>
+                <option value="owner">Dentist / Owner</option>
+                <option value="secretary">Business Partner / Secretary</option>
+                <option value="assistant">Dental Assistant</option>
             </select>
-            <button type="submit" class="signin-btn">Sign In</button>
+            <label for="password">Password</label>
+            <input class="login-field" id="password" type="password" placeholder="At least 10 characters" autocomplete="current-password" minlength="10" required>
+            <button type="submit" class="signin-btn" id="signinBtn">Sign In</button>
             <button type="button" class="forgot-link">Forgot Password?</button>
             <p id="loginStatus" class="login-status" role="status"></p>
         </form>
@@ -49,6 +50,7 @@
                 <a href="#patients" data-page="patients"><span class="icon" aria-hidden="true"></span>Patients</a>
                 <a href="#billing" data-page="billing"><span class="icon" aria-hidden="true"></span>Billing</a>
                 <a href="#settings" data-page="settings"><span class="icon" aria-hidden="true"></span>Settings</a>
+                <a href="#logistics" data-page="logistics"><span class="icon" aria-hidden="true"></span>Logistics</a>
             </nav>
         </aside>
 
@@ -63,11 +65,11 @@
                         <path d="M18 18l9 9" stroke="#444" stroke-width="2"/>
                     </svg>
                 </search>
-                <span class="icon bell" aria-hidden="true"></span>
+                <button type="button" class="icon bell" id="notificationBtn" aria-label="Show notifications"></button>
                 <div class="profile-menu">
                     <button type="button" class="user-box" id="profileBtn" aria-expanded="false" aria-controls="profileDropdown" aria-label="Account options">
                         <span class="avatar" aria-hidden="true">DR</span>
-                        <span class="user-name"><span class="u-name"></span><small class="u-role"></small></span>
+                        <span class="user-name">Name (Role)</span>
                         <span class="arrow" aria-hidden="true"></span>
                     </button>
                     <div class="profile-dropdown" id="profileDropdown" hidden>
@@ -75,6 +77,7 @@
                     </div>
                 </div>
             </header>
+            <p class="system-notice app-notice" id="appNotice" role="status">Local mode — changes are saved in this browser only. Data is not encrypted or backed up; use test data.</p>
 
             <section class="page" id="shell" aria-label="Dashboard">
                 <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -86,147 +89,40 @@
             <section class="page" id="calendar" aria-labelledby="calendarTitle">
                 <h2 id="calendarTitle" class="sr-only">Appointment calendar</h2>
                 <div class="calendar-bar">
-                    <div class="cal-nav">
-                        <button type="button" class="btn" id="calToday">Today</button>
-                        <div class="month"><button type="button" id="calPrev" aria-label="Previous week">&lt;</button><span id="calMonth" aria-live="polite"></span><button type="button" id="calNext" aria-label="Next week">&gt;</button></div>
-                    </div>
-                    <div class="view-switch" role="group" aria-label="Calendar view">
-                        <button type="button" id="viewDay" aria-pressed="false">Daily</button>
-                        <button type="button" id="viewWeek" aria-pressed="true" class="current">Weekly</button>
-                        <button type="button" id="viewMonth" aria-pressed="false">Monthly</button>
-                    </div>
+                    <button type="button" class="btn" id="calToday">Today</button>
+                    <div class="month"><button type="button" id="calPrev" aria-label="Previous week">&lt;</button><span id="calMonth"></span><button type="button" id="calNext" aria-label="Next week">&gt;</button></div>
+                    <button type="button" class="btn gray" id="viewWeek">Week</button>
+                    <button type="button" class="btn" id="viewDay">Day</button>
                     <button type="button" class="btn cta small-text" id="newBooking">New Booking +</button>
                 </div>
-                <p class="cal-summary" id="calSummary" role="status" aria-live="polite"></p>
-                <div class="calendar-scroll" id="calStage">
+                <div class="calendar-scroll">
                     <table class="calendar" id="calGrid"><caption class="sr-only">Appointment schedule</caption></table>
-                    <div class="month-grid" id="calMonthGrid" hidden></div>
                 </div>
             </section>
 
             <section class="page" id="patients" aria-labelledby="patientsTitle">
                 <div class="patients-layout">
 
-                    <div class="patients-list" id="patListView">
+                    <div class="patients-list">
                         <header class="list-head">
-                            <div>
-                                <h2 id="patientsTitle">Patient Records</h2>
-                                <p class="list-count" id="patCount" role="status" aria-live="polite"></p>
-                            </div>
+                            <h2 id="patientsTitle">Patients</h2>
                             <button type="button" class="btn cta" id="newPatientBtn">+ New Patient</button>
                         </header>
-                        <div class="filter-bar" role="group" aria-label="Filter patient records">
-                            <div class="fb-field" id="fbBalance">
-                                <label for="fStatus">Balance</label>
-                                <select id="fStatus">
-                                    <option value="">All patients</option>
-                                    <option value="owing">With balance</option>
-                                    <option value="paid">Fully paid</option>
-                                    <option value="none">No visits yet</option>
-                                </select>
-                            </div>
-                            <div class="fb-field" id="fbVisit">
-                                <label for="fVisit">Last visit</label>
-                                <select id="fVisit">
-                                    <option value="">Any time</option>
-                                    <option value="30">Within 30 days</option>
-                                    <option value="90">Within 90 days</option>
-                                    <option value="old">Over 90 days ago</option>
-                                    <option value="never">Never visited</option>
-                                </select>
-                            </div>
-                            <div class="fb-field">
-                                <label for="fAge">Age group</label>
-                                <select id="fAge">
-                                    <option value="">All ages</option>
-                                    <option value="child">Under 18</option>
-                                    <option value="adult">18 to 59</option>
-                                    <option value="senior">60 and above</option>
-                                </select>
-                            </div>
-                            <button type="button" class="btn fb-clear" id="fClear">Clear</button>
-                        </div>
                         <table class="data patients-table" id="patientTable"><caption class="sr-only">Patient directory</caption></table>
                     </div>
 
-                    <div class="np-view" id="patFormView" hidden>
-                        <header class="patient-head">
-                            <a href="#patients" class="back" data-page="patients" id="npBack">&lt; Patient Records</a>
-                            <h2 class="patient-name">New Patient</h2>
-                        </header>
-
-                        <form class="new-patient" id="npForm" novalidate aria-labelledby="newPatientTitle">
-                            <h3 id="newPatientTitle">Patient Registration</h3>
-                            <small>Existing records are checked automatically as you type the name. Fields marked * are required.</small>
-
-                            <fieldset class="np-section">
-                                <legend>Personal Information</legend>
-                                <div class="field-row two">
-                                    <div>
-                                        <label for="npFirst">First Name *</label>
-                                        <input id="npFirst" type="text" autocomplete="given-name" placeholder="e.g. Maria" required>
-                                    </div>
-                                    <div>
-                                        <label for="npMiddle">Middle Name</label>
-                                        <input id="npMiddle" type="text" autocomplete="additional-name" placeholder="Leave blank if none">
-                                    </div>
-                                </div>
-                                <label for="npLast">Last Name *</label>
-                                <input id="npLast" type="text" autocomplete="family-name" placeholder="e.g. Santos" required>
-                                <div class="dup-warn" id="npDup" aria-live="polite" hidden></div>
-                                <div class="field-row">
-                                    <div>
-                                        <label for="npBirth">Birthdate *</label>
-                                        <input id="npBirth" type="date" required>
-                                    </div>
-                                    <div>
-                                        <label for="npAge">Age</label>
-                                        <input id="npAge" type="text" readonly tabindex="-1" placeholder="Auto" aria-describedby="npAgeHint">
-                                    </div>
-                                </div>
-                                <small id="npAgeHint">Age is calculated from the birthdate.</small>
-                            </fieldset>
-
-                            <fieldset class="np-section">
-                                <legend>Contact Information</legend>
-                                <label for="npPhone">Phone Number *</label>
-                                <input id="npPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. 0917 123 4567" required>
-                                <small class="np-soft" id="npPhoneNote" aria-live="polite"></small>
-                                <label for="npEmergency">Emergency Contact</label>
-                                <input id="npEmergency" type="text" placeholder="Name, relationship and phone">
-                            </fieldset>
-
-                            <fieldset class="np-section">
-                                <legend>Address</legend>
-                                <label for="npAddress">Home Address</label>
-                                <input id="npAddress" type="text" autocomplete="street-address" placeholder="House no., street, barangay, city">
-                            </fieldset>
-
-                            <fieldset class="np-section" id="npMedical">
-                                <legend>Medical Information</legend>
-                                <label for="npConditions">Medical Conditions</label>
-                                <input id="npConditions" type="text" placeholder="Leave blank if none">
-                                <label for="npAllergies">Allergies</label>
-                                <input id="npAllergies" type="text" placeholder="Leave blank if none">
-                                <label for="npMeds">Current Medications</label>
-                                <input id="npMeds" type="text" placeholder="Leave blank if none">
-                                <label for="npDnote">Notes</label>
-                                <input id="npDnote" type="text" placeholder="Optional">
-                            </fieldset>
-
-                            <button type="submit" class="btn cta np-submit" id="npSubmit">Register Patient</button>
-                        </form>
-
-                        <div class="np-done" id="npDone" role="status" hidden>
-                            <span class="np-done-ic" aria-hidden="true">✓</span>
-                            <h3>Patient Registered</h3>
-                            <p id="npDoneText"></p>
-                            <div class="np-done-actions">
-                                <button type="button" class="btn cta" id="npBook">Book Appointment</button>
-                                <button type="button" class="btn" id="npToList">Back to Patient Records</button>
-                            </div>
-                        </div>
-                    </div>
+                    <form class="new-patient" id="npForm" novalidate aria-labelledby="newPatientTitle">
+                        <h3 id="newPatientTitle">New Patient</h3>
+                        <small>Step 1: Check for an existing record</small>
+                        <label for="npName">Full Name</label>
+                        <input id="npName" type="text" placeholder="e.g. Maria Santos" required>
+                        <label for="npBirth">Birthdate</label>
+                        <input id="npBirth" type="date" required>
+                        <label for="npPhone">Phone (optional)</label>
+                        <input id="npPhone" type="tel" placeholder="09xx xxx xxxx">
+                        <button type="button" class="action-btn check-btn" id="npCheck">Check records</button>
+                        <div class="found-box" id="npResult" aria-live="polite"><p>Check the name and birthdate first. Any matching record appears here.</p></div>
+                    </form>
 
                 </div>
             </section>
@@ -251,27 +147,22 @@
             <section class="page" id="billing" aria-labelledby="billingTitle">
                 <header class="title-row">
                     <h2 id="billingTitle">Billing</h2>
+                    <button type="button" class="btn gray" id="addTx">Add treatment</button>
                 </header>
-
-                <div id="billPick">
-                    <p class="helper">Select a patient to open their billing, installments and treatment records. Use the search bar above to find a patient.</p>
-                    <table class="data patients-table" id="billPatientTable"><caption class="sr-only">Registered patients</caption></table>
+                <div id="clinicBalances">
+                    <h3 class="payment-title">Patient balances</h3>
+                    <p class="clinic-balance-summary">Total outstanding: <strong id="clinicBalTotal">₱ 0</strong></p>
+                    <table class="data balance-table" id="balanceTable"><caption class="sr-only">Patient balances</caption></table>
                 </div>
-
-                <div id="billPanel" hidden>
-                    <header class="patient-head">
-                        <a href="#billing" class="back" data-act="bill-back">&lt; All patients</a>
-                        <h3 class="patient-name" id="ledgerHead" tabindex="-1"><span id="ledgerName"></span><span id="ledgerId"></span></h3>
-                        <button type="button" class="btn cta" id="recordPay">Record Payment</button>
-                        <button type="button" class="btn plain" id="printBtn">Print receipt</button>
-                    </header>
-                    <div class="boxes bill-sum" id="billSum"></div>
-                    <div class="tabs" role="group" aria-label="Billing views">
-                        <button type="button" class="tab current" data-btab="treatment">Treatment</button>
-                        <button type="button" class="tab" data-btab="installments">Installments</button>
-                        <button type="button" class="tab" data-btab="records">Visit Records</button>
-                    </div>
-                    <div id="billBody"></div>
+                <h3 class="payment-title"><span id="ledgerName">Trishia Maralit</span> ledger</h3>
+                <table class="data ledger-table" id="ledgerTable"><caption class="sr-only">Patient ledger</caption></table>
+                <h3 class="payment-title">Payment history</h3>
+                <table class="data payment-table" id="paymentTable"><caption class="sr-only">Payment history</caption></table>
+                <div class="balance-box">
+                    <p>Outstanding balance</p>
+                    <strong id="balTotal">₱ 2,000</strong>
+                    <button type="button" class="btn cta" id="recordPay">Record Payment</button>
+                    <button type="button" class="btn plain" id="printBtn">Print receipt</button>
                 </div>
             </section>
 
@@ -282,26 +173,56 @@
                 </header>
                 <table class="data users-table" id="usersTable"><caption class="sr-only">Clinic users</caption></table>
 
-                <h2 class="second-title">Permission Matrix</h2>
+                <h2 class="second-title">Permission matrix</h2>
                 <table class="data perms-table"><caption class="sr-only">Role permissions</caption>
                     <thead>
                     <tr>
+                        <th scope="col">Name</th>
                         <th scope="col">Role</th>
-                        <th scope="col">Access level</th>
                         <th scope="col">Calendar</th>
-                        <th scope="col">Patients</th>
                         <th scope="col">Billing</th>
                         <th scope="col">Users</th>
                     </tr>
                     </thead>
-                    <tbody id="permsBody"></tbody>
+                    <tbody>
+                    <tr>
+                        <td>Dentist / Owner</td>
+                        <td>Full</td>
+                        <td>Full</td>
+                        <td>Full</td>
+                        <td>Full</td>
+                    </tr>
+                    <tr>
+                        <td>Business Partner/Secretary</td>
+                        <td>Broad</td>
+                        <td>Full</td>
+                        <td>Full</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>Dental assistant</td>
+                        <td>Restricted</td>
+                        <td>View</td>
+                        <td>No</td>
+                        <td>No</td>
+                    </tr>
+                    </tbody>
                 </table>
+                <div class="box buffer-setting">
+                    <label for="bufferMinutes">Appointment buffer (minutes)</label>
+                    <input id="bufferMinutes" type="number" min="0" max="180" step="5" value="30">
+                    <button type="button" class="btn gray" id="saveBuffer">Save buffer</button>
+                </div>
+            </section>
+
+            <section class="page" id="logistics" aria-labelledby="logisticsTitle">
+                <header class="title-row"><h2 id="logisticsTitle">Clinic logistics and supplies</h2></header>
+                <p class="muted-copy">Assistant view: scheduling logistics and supply status only.</p>
+                <table class="data" id="supplyTable"><caption class="sr-only">Clinic supply status</caption></table>
             </section>
 
         </main>
     </div>
-
-    <div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
 
     <dialog id="dlg" aria-labelledby="dlgTitle">
         <form id="dlgForm" novalidate>
