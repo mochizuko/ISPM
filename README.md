@@ -105,31 +105,6 @@ data.
 - [ ] Add user-facing save/error states and data-recovery guidance for storage
   quota, browser restrictions, and corrupted local records.
 
-### Backend
-
-- [ ] Design and review the relational schema and migrations for User,
-  Dentist, Staff, Patient, TreatmentRecord, Appointment, Billing, and Payment,
-  including keys, constraints, indexes, and appointment/payment status enums.
-- [ ] Implement an authenticated API and database persistence; migrate local
-  prototype data with integrity checks.
-- [ ] Move password verification and role authorization to the server. Enforce
-  permissions on every API operation; remove embedded credentials and client-
-  only trust decisions.
-- [ ] Implement account provisioning, secure password reset, session expiry,
-  audit logging, and appropriate handling of sensitive clinical/financial
-  records.
-- [ ] Select and validate a free-tier hosting/database plan, configure HTTPS,
-  secrets, monitoring, and deployment environments.
-- [ ] Implement automated cloud backups and a tested restore procedure.
-- [ ] Add remote access and multi-device data synchronization. Define conflict
-  handling before adding offline edits.
-- [ ] Integrate patient confirmation delivery and notification providers,
-  including consent, templates, retries, and delivery status.
-- [ ] Implement the PDA migration service and verify imported/encoded records
-  against source counts and checksums.
-- [ ] Establish GitHub branch/PR rules and CI checks for linting, tests, and
-  deployment.
-
 ### Quality Assurance (QA)
 
 - [ ] Add automated unit, integration, and end-to-end tests; there is currently
