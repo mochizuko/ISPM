@@ -19,19 +19,20 @@
                 <img class="logo-text" src="images/dentsync-text.png" alt="DentSync">
             </div>
             <h1 id="loginTitle">Login</h1>
+            <p class="system-notice" id="authHelp" role="status">Choose the role for this sign-in, then enter that account's email and password.</p>
             <hr>
             <label for="email">Email</label>
-            <input class="login-field" id="email" type="email" placeholder="name@clinic.com" autocomplete="email">
-            <label for="password">Password</label>
-            <input class="login-field" id="password" type="password" placeholder="Enter your password" autocomplete="current-password">
-            <label for="role">Role</label>
+            <input class="login-field" id="email" type="email" placeholder="name@clinic.com" autocomplete="email" required>
+            <label for="role">Sign in as</label>
             <select class="login-field role-select" id="role" required>
                 <option value="">Select a role</option>
                 <option value="owner">Dentist / Owner</option>
                 <option value="secretary">Business Partner / Secretary</option>
                 <option value="assistant">Dental Assistant</option>
             </select>
-            <button type="submit" class="signin-btn">Sign In</button>
+            <label for="password">Password</label>
+            <input class="login-field" id="password" type="password" placeholder="At least 10 characters" autocomplete="current-password" minlength="10" required>
+            <button type="submit" class="signin-btn" id="signinBtn">Sign In</button>
             <button type="button" class="forgot-link">Forgot Password?</button>
             <p id="loginStatus" class="login-status" role="status"></p>
         </form>
@@ -49,6 +50,7 @@
                 <a href="#patients" data-page="patients"><span class="icon" aria-hidden="true"></span>Patients</a>
                 <a href="#billing" data-page="billing"><span class="icon" aria-hidden="true"></span>Billing</a>
                 <a href="#settings" data-page="settings"><span class="icon" aria-hidden="true"></span>Settings</a>
+                <a href="#logistics" data-page="logistics"><span class="icon" aria-hidden="true"></span>Logistics</a>
             </nav>
         </aside>
 
@@ -63,7 +65,7 @@
                         <path d="M18 18l9 9" stroke="#444" stroke-width="2"/>
                     </svg>
                 </search>
-                <span class="icon bell" aria-hidden="true"></span>
+                <button type="button" class="icon bell" id="notificationBtn" aria-label="Show notifications"></button>
                 <div class="profile-menu">
                     <button type="button" class="user-box" id="profileBtn" aria-expanded="false" aria-controls="profileDropdown" aria-label="Account options">
                         <span class="avatar" aria-hidden="true">DR</span>
@@ -75,6 +77,7 @@
                     </div>
                 </div>
             </header>
+            <p class="system-notice app-notice" id="appNotice" role="status">Local mode — changes are saved in this browser only. Data is not encrypted or backed up; use test data.</p>
 
             <section class="page" id="shell" aria-label="Dashboard">
                 <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -112,9 +115,9 @@
                         <h3 id="newPatientTitle">New Patient</h3>
                         <small>Step 1: Check for an existing record</small>
                         <label for="npName">Full Name</label>
-                        <input id="npName" type="text" placeholder="e.g. Maria Santos">
+                        <input id="npName" type="text" placeholder="e.g. Maria Santos" required>
                         <label for="npBirth">Birthdate</label>
-                        <input id="npBirth" type="date">
+                        <input id="npBirth" type="date" required>
                         <label for="npPhone">Phone (optional)</label>
                         <input id="npPhone" type="tel" placeholder="09xx xxx xxxx">
                         <button type="button" class="action-btn check-btn" id="npCheck">Check records</button>
@@ -143,10 +146,18 @@
 
             <section class="page" id="billing" aria-labelledby="billingTitle">
                 <header class="title-row">
-                    <h2 id="billingTitle"><span id="ledgerName">Trishia Maralit</span><span>Ledger</span></h2>
+                    <h2 id="billingTitle">Billing</h2>
                     <button type="button" class="btn gray" id="addTx">Add treatment</button>
                 </header>
+                <div id="clinicBalances">
+                    <h3 class="payment-title">Patient balances</h3>
+                    <p class="clinic-balance-summary">Total outstanding: <strong id="clinicBalTotal">₱ 0</strong></p>
+                    <table class="data balance-table" id="balanceTable"><caption class="sr-only">Patient balances</caption></table>
+                </div>
+                <h3 class="payment-title"><span id="ledgerName">Trishia Maralit</span> ledger</h3>
                 <table class="data ledger-table" id="ledgerTable"><caption class="sr-only">Patient ledger</caption></table>
+                <h3 class="payment-title">Payment history</h3>
+                <table class="data payment-table" id="paymentTable"><caption class="sr-only">Payment history</caption></table>
                 <div class="balance-box">
                     <p>Outstanding balance</p>
                     <strong id="balTotal">₱ 2,000</strong>
@@ -197,6 +208,17 @@
                     </tr>
                     </tbody>
                 </table>
+                <div class="box buffer-setting">
+                    <label for="bufferMinutes">Appointment buffer (minutes)</label>
+                    <input id="bufferMinutes" type="number" min="0" max="180" step="5" value="30">
+                    <button type="button" class="btn gray" id="saveBuffer">Save buffer</button>
+                </div>
+            </section>
+
+            <section class="page" id="logistics" aria-labelledby="logisticsTitle">
+                <header class="title-row"><h2 id="logisticsTitle">Clinic logistics and supplies</h2></header>
+                <p class="muted-copy">Assistant view: scheduling logistics and supply status only.</p>
+                <table class="data" id="supplyTable"><caption class="sr-only">Clinic supply status</caption></table>
             </section>
 
         </main>
