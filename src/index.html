@@ -65,7 +65,9 @@
                         <path d="M18 18l9 9" stroke="#444" stroke-width="2"/>
                     </svg>
                 </search>
-                <button type="button" class="icon bell" id="notificationBtn" aria-label="Show notifications"></button>
+                <button type="button" class="icon bell notification-button" id="notificationBtn" aria-label="Show notifications">
+                    <span class="notification-count" id="notificationCount" aria-hidden="true"></span>
+                </button>
                 <div class="profile-menu">
                     <button type="button" class="user-box" id="profileBtn" aria-expanded="false" aria-controls="profileDropdown" aria-label="Account options">
                         <span class="avatar" aria-hidden="true">DR</span>
@@ -91,8 +93,9 @@
                 <div class="calendar-bar">
                     <button type="button" class="btn" id="calToday">Today</button>
                     <div class="month"><button type="button" id="calPrev" aria-label="Previous week">&lt;</button><span id="calMonth"></span><button type="button" id="calNext" aria-label="Next week">&gt;</button></div>
-                    <button type="button" class="btn gray" id="viewWeek">Week</button>
-                    <button type="button" class="btn" id="viewDay">Day</button>
+                    <button type="button" class="btn gray" id="viewWeek" aria-pressed="true">Week</button>
+                    <button type="button" class="btn" id="viewDay" aria-pressed="false">Day</button>
+                    <button type="button" class="btn" id="viewMonth" aria-pressed="false">Month</button>
                     <button type="button" class="btn cta small-text" id="newBooking">New Booking +</button>
                 </div>
                 <div class="calendar-scroll">
@@ -120,6 +123,13 @@
                         <input id="npBirth" type="date" required>
                         <label for="npPhone">Phone (optional)</label>
                         <input id="npPhone" type="tel" placeholder="09xx xxx xxxx">
+                        <label for="npAddress">Address (optional)</label>
+                        <input id="npAddress" type="text" placeholder="House, street, barangay, city">
+                        <label for="npEmergency">Emergency contact (optional)</label>
+                        <input id="npEmergency" type="text" placeholder="Name and phone">
+                        <label for="npConditions">Known conditions / allergies</label>
+                        <input id="npConditions" type="text" placeholder="Conditions, allergies, or None">
+                        <p class="match-policy" id="npMatchPolicy">Duplicate policy: matches use the same birthdate plus the same normalized name (ignoring case, accents, punctuation, extra spaces, and middle initials).</p>
                         <button type="button" class="action-btn check-btn" id="npCheck">Check records</button>
                         <div class="found-box" id="npResult" aria-live="polite"><p>Check the name and birthdate first. Any matching record appears here.</p></div>
                     </form>
@@ -164,6 +174,22 @@
                     <button type="button" class="btn cta" id="recordPay">Record Payment</button>
                     <button type="button" class="btn plain" id="printBtn">Print receipt</button>
                 </div>
+                <section class="print-receipt-layout" aria-label="Printable receipt">
+                    <header class="receipt-header">
+                        <img src="images/dentsync-mark.png" alt="" class="receipt-logo">
+                        <div><h2>DentSync Dental Clinic</h2><p>Patient ledger receipt</p></div>
+                    </header>
+                    <dl class="receipt-meta">
+                        <div><dt>Patient</dt><dd id="receiptPatient">—</dd></div>
+                        <div><dt>Patient ID</dt><dd id="receiptPatientId">—</dd></div>
+                        <div><dt>Printed</dt><dd id="receiptDate">—</dd></div>
+                        <div><dt>Outstanding</dt><dd id="receiptBalance">₱ 0</dd></div>
+                    </dl>
+                    <div id="receiptLedger"></div>
+                    <h3>Recent payments</h3>
+                    <div id="receiptPayments"></div>
+                    <p class="receipt-note">This is a local clinic receipt, not a payment processor or tax-compliant document.</p>
+                </section>
             </section>
 
             <section class="page" id="settings" aria-labelledby="settingsTitle">
@@ -212,6 +238,31 @@
                     <label for="bufferMinutes">Appointment buffer (minutes)</label>
                     <input id="bufferMinutes" type="number" min="0" max="180" step="5" value="30">
                     <button type="button" class="btn gray" id="saveBuffer">Save buffer</button>
+                </div>
+                <div class="box clinic-data-tools" aria-labelledby="clinicDataTitle">
+                    <h3 id="clinicDataTitle">Clinic setup and local data</h3>
+                    <p class="muted-copy" id="clinicSetupStatus">Seeded demo records are clearly marked and are separate from clinic-entered records.</p>
+                    <div class="data-actions">
+                        <button type="button" class="btn gray" id="cleanClinicBtn">Start clean clinic</button>
+                        <button type="button" class="btn gray" id="exportDataBtn">Export backup</button>
+                        <button type="button" class="btn" id="importDataBtn">Import backup</button>
+                        <button type="button" class="btn" id="restoreRecoveryBtn">Restore recovery snapshot</button>
+                        <input type="file" id="importDataFile" accept="application/json,.json" hidden>
+                    </div>
+                    <p class="muted-copy">Backups include patients, appointments, users, accounts, supplies, and settings. Importing creates a recovery snapshot before it replaces local data.</p>
+                    <details class="match-policy">
+                        <summary>Duplicate-record match policy</summary>
+                        <p>A record is a possible duplicate when it has the same birthdate and normalized name. Names ignore case, accents, punctuation, extra spaces, and middle initials. A shared phone number is not a duplicate match.</p>
+                    </details>
+                </div>
+                <div class="box pda-import" aria-labelledby="pdaImportTitle">
+                    <h3 id="pdaImportTitle">PDA / chart import verification</h3>
+                    <p class="muted-copy">Import a JSON array or CSV with patient, birthdate, phone, address, emergency, conditions, allergies, medications, and notes columns.</p>
+                    <input type="file" id="pdaImportFile" accept=".json,.csv,application/json,text/csv">
+                    <div class="pda-report" id="pdaReport" aria-live="polite">
+                        <p>No chart import has been prepared.</p>
+                    </div>
+                    <button type="button" class="btn cta" id="commitPdaImport" disabled>Commit verified records</button>
                 </div>
             </section>
 

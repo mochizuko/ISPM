@@ -88,21 +88,21 @@ data.
 
 ### Frontend
 
-- [ ] Replace or clearly separate the seeded patient and appointment fixtures
+- [x] Replace or clearly separate the seeded patient and appointment fixtures
   from clinic data; provide a clean-clinic setup flow.
-- [ ] Finish the month-level calendar navigation/view and improve calendar
+- [x] Finish the month-level calendar navigation/view and improve calendar
   accessibility, keyboard use, and notification affordances.
-- [ ] Add robust input and duplicate-record validation, including a documented
+- [x] Add robust input and duplicate-record validation, including a documented
   match policy for names and birthdates.
-- [ ] Complete local data export/import with validation and a recovery flow
+- [x] Complete local data export/import with validation and a recovery flow
   before users rely on browser storage.
-- [ ] Build a PDA/chart-import interface and a record-by-record verification
+- [x] Build a PDA/chart-import interface and a record-by-record verification
   report.
-- [ ] Finalize patient forms and medical questionnaire fields against the
+- [x] Finalize patient forms and medical questionnaire fields against the
   approved wireframes and UML.
-- [ ] Refine receipt layout and confirm the print-to-PDF output with realistic
+- [x] Refine receipt layout and confirm the print-to-PDF output with realistic
   ledger and payment data.
-- [ ] Add user-facing save/error states and data-recovery guidance for storage
+- [x] Add user-facing save/error states and data-recovery guidance for storage
   quota, browser restrictions, and corrupted local records.
 
 ### Quality Assurance (QA)
